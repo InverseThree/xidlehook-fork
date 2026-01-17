@@ -75,9 +75,12 @@ pub struct Opt {
     pub socket: Option<String>,
 
     /// Don't invoke the timer when any audio is playing (PulseAudio specific)
-    #[cfg(feature = "pulse")]
-    #[structopt(long, conflicts_with("print"))]
+    #[structopt(long, conflicts_with("print"), conflicts_with("when-audio"))]
     pub not_when_audio: bool,
+
+    /// Invoke the timer when any audio is playing (PulseAudio specific)
+    #[structopt(long, conflicts_with("print"), conflicts_with("not-when-audio"))]
+    pub when_audio: bool,
 }
 
 #[tokio::main(flavor = "current_thread")]
@@ -125,6 +128,9 @@ async fn main() -> xidlehook_core::Result<()> {
     {
         if opt.not_when_audio {
             modules.push(Box::new(xidlehook_core::modules::NotWhenAudio::new()?))
+        }
+        if opt.when_audio {
+            modules.push(Box::new(xidlehook_core::modules::WhenAudio::new()?))
         }
     }
 
