@@ -139,10 +139,14 @@ impl<M: Module> Module for Vec<M> {
 }
 
 #[cfg(feature = "pulse")]
-pub mod pulse;
+pub mod pulse1;
+#[cfg(feature = "pulse")]
+pub mod pulse2;
 pub mod stop_at;
 pub mod xcb;
 
 #[cfg(feature = "pulse")]
-pub use self::pulse::NotWhenAudio;
+pub use self::pulse1::NotWhenAudio;
+#[cfg(feature = "pulse")]
+pub use self::pulse2::WhenAudio;
 pub use self::{stop_at::StopAt, xcb::Xcb};
