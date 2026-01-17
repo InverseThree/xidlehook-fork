@@ -43,9 +43,14 @@ pub struct Opt {
     pub not_when_fullscreen: bool,
     /// Don't invoke the timer when any audio is playing (only
     /// compatible with PulseAudio)
-    #[cfg(feature = "pulse")]
+    #[cfg(feature = "pulse1")]
     #[structopt(long)]
     pub not_when_audio: bool,
+    /// Invoke the timer when any audio is playing (only
+    /// compatible with PulseAudio)
+    #[cfg(feature = "pulse2")]
+    #[structopt(long)]
+    pub when_audio: bool,
 
     /// The duration is the number of seconds of inactivity which
     /// should trigger this timer.
@@ -94,10 +99,16 @@ fn main() -> xidlehook_core::Result<()> {
     if opt.not_when_fullscreen {
         modules.push(Box::new(Rc::clone(&xcb).not_when_fullscreen()));
     }
-    #[cfg(feature = "pulse")]
+    #[cfg(feature = "pulse1")]
     {
         if opt.not_when_audio {
             modules.push(Box::new(xidlehook_core::modules::NotWhenAudio::new()?))
+        }
+    }
+    #[cfg(feature = "pulse2")]
+    {
+        if opt.when_audio {
+            modules.push(Box::new(xidlehook_core::modules::WhenAudio::new()?))
         }
     }
 
